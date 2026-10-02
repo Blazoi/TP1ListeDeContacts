@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [Contact::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 
@@ -24,7 +24,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "contact_database"
-                ).build().also { Instance = it }
+                ).fallbackToDestructiveMigration()
+                    .build().also { Instance = it }
+
             }
     }
 

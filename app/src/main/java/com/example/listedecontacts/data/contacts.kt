@@ -13,6 +13,7 @@ data class Contact(
     val lastName: String,
     val phone: String,
     val email: String,
+    val address: String,
     val age: Int,
     val favorite: Boolean,
     val photo: Int

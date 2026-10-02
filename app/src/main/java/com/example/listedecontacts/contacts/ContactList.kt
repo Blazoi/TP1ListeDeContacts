@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,14 +33,17 @@ import com.example.listedecontacts.data.Contact
 
 @Composable
 fun ContactList(contacts: List<Contact>) {
-    LazyColumn(modifier = Modifier.padding(10.dp)) {
+    LazyColumn(
+        modifier = Modifier.padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(5.dp)
+    ) {
         items(contacts) { contact ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(5f)
-                    .background(Color.White)
-                    .padding(5.dp)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 20.dp)
                     .clickable(onClick = {}),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
@@ -49,7 +53,7 @@ fun ContactList(contacts: List<Contact>) {
                         .fillMaxHeight(.75f)
                         .aspectRatio(1f)
                         .clip(CircleShape)
-                        .background(Color.Blue),
+                        .background(MaterialTheme.colorScheme.primary),
                     contentAlignment = Alignment.Center
                 ) {
                     if (contact.photo > 0) {
@@ -61,7 +65,8 @@ fun ContactList(contacts: List<Contact>) {
                         Text(
                             text = contact.firstName[0].toString().capitalize(),
                             fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 }
@@ -69,23 +74,24 @@ fun ContactList(contacts: List<Contact>) {
                     modifier = Modifier
                         .padding(start = 10.dp)
                         .weight(1f),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column() {
                         Text(
                             text = contact.firstName + " " + contact.lastName,
-                            color = Color.Black
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = contact.phone,
-                            color = Color.Black
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
 
                     if (contact.favorite)
                         Text(
                             text = "★",
-                            color = Color.Black
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                 }
             }

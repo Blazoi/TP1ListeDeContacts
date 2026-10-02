@@ -43,7 +43,19 @@ class MainActivity : ComponentActivity() {
 }
 
 public var currentContact: Contact =
-    Contact(0, "first", "last", "1234", "@email.com", 19, false, 0);
+    Contact(
+        0,
+        "first",
+        "last",
+        "1234",
+        "@email.com",
+        "address",
+        19,
+        false,
+        0
+    )
+
+public var isContactNew = true
 
 enum class Screens {
     Contacts,
@@ -54,7 +66,7 @@ enum class Screens {
 fun MainUI(contactViewModel: ContactViewModel) {
 
     var isEditing by remember { mutableStateOf(false) }
-    var screen by remember { mutableStateOf(Screens.CreateContact) }
+    var screen by remember { mutableStateOf(Screens.Contacts) }
     val contacts by contactViewModel.contacts.collectAsState()
 
 
@@ -70,9 +82,14 @@ fun MainUI(contactViewModel: ContactViewModel) {
                     isEditing = true
                 },
                 {
-//                    contactViewModel.delete(currentContact)
-                    screen = Screens.Contacts
-                    isEditing = false
+                    if (isContactNew) {
+                        screen = Screens.Contacts
+                        isEditing = false
+                    } else {
+//                        contactViewModel.delete(currentContact)
+                        screen = Screens.Contacts
+                        isEditing = false
+                    }
                 }
             )
         },
@@ -86,7 +103,12 @@ fun MainUI(contactViewModel: ContactViewModel) {
             if (screen == Screens.Contacts)
                 ContactList(contacts)
             else
-                CreateContact()
+                CreateContact(
+                    contactViewModel,
+                    {
+                        screen = Screens.Contacts
+                    }
+                )
         }
     }
 }
