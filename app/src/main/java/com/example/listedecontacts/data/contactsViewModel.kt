@@ -10,14 +10,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ContactViewModel(application: Application) : AndroidViewModel(application) {
-    private val dao: ContactDao = AppDatabase.getDatabase(application.applicationContext).contactDao()
+    private val dao: ContactDao =
+        AppDatabase.getDatabase(application.applicationContext).contactDao()
 
-    val contacts: StateFlow<List<Contact>> = dao.getAll()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
+    val contacts: StateFlow<List<Contact>> = dao.getAll().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 
     fun add(contact: Contact) = viewModelScope.launch(Dispatchers.IO) {
         dao.insert(contact)
