@@ -29,10 +29,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.R
+import com.example.listedecontacts.currentContact
 import com.example.listedecontacts.data.Contact
+import com.example.listedecontacts.isContactNew
 
 @Composable
-fun ContactList(contacts: List<Contact>) {
+fun ContactList(contacts: List<Contact>, editContact: (Contact) -> Unit) {
     LazyColumn(
         modifier = Modifier.padding(10.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp)
@@ -44,7 +46,7 @@ fun ContactList(contacts: List<Contact>) {
                     .aspectRatio(5f)
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(top = 5.dp, bottom = 5.dp, start = 5.dp, end = 20.dp)
-                    .clickable(onClick = {}),
+                    .clickable(onClick = { editContact(contact) }),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -63,7 +65,7 @@ fun ContactList(contacts: List<Contact>) {
                         )
                     } else {
                         Text(
-                            text = contact.firstName[0].toString().capitalize(),
+                            text = contact.name[0].toString().capitalize(),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
                             color = MaterialTheme.colorScheme.onPrimary
@@ -79,7 +81,7 @@ fun ContactList(contacts: List<Contact>) {
                 ) {
                     Column() {
                         Text(
-                            text = contact.firstName + " " + contact.lastName,
+                            text = contact.name,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(

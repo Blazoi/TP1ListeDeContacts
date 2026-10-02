@@ -9,8 +9,7 @@ import com.example.listedecontacts.R
 data class Contact(
     @PrimaryKey(autoGenerate = true)
     val uid: Int = 0,
-    val firstName: String,
-    val lastName: String,
+    val name: String,
     val phone: String,
     val email: String,
     val address: String,

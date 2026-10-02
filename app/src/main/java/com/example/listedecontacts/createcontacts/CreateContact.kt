@@ -1,5 +1,7 @@
 package com.example.listedecontacts.createcontacts
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,12 +32,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.listedecontacts.currentContact
 import com.example.listedecontacts.data.Contact
 import com.example.listedecontacts.data.ContactViewModel
+import com.example.listedecontacts.isContactNew
+
+fun showToast(context: Context, msg: String) {
+    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+}
 
 @Composable
 fun CreateContact(contactViewModel: ContactViewModel, backToContacts: () -> Unit) {
@@ -46,12 +55,14 @@ fun CreateContact(contactViewModel: ContactViewModel, backToContacts: () -> Unit
             .padding(top = 10.dp, bottom = 10.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        var name by remember { mutableStateOf("Test") }
-        var phoneNumber by remember { mutableStateOf("") }
-        var age by remember { mutableIntStateOf(0) }
-        var email by remember { mutableStateOf("") }
-        var address by remember { mutableStateOf("") }
-        var favorite by remember { mutableStateOf(false) }
+        var name by remember { mutableStateOf(if (!isContactNew) currentContact.name else "") }
+        var phoneNumber by remember { mutableStateOf(if (!isContactNew) currentContact.phone else "") }
+        var age by remember { mutableIntStateOf(if (!isContactNew) currentContact.age else 0) }
+        var email by remember { mutableStateOf(if (!isContactNew) currentContact.email else "") }
+        var address by remember { mutableStateOf(if (!isContactNew) currentContact.address else "") }
+        var favorite by remember { mutableStateOf(if (!isContactNew) currentContact.favorite else false) }
+
+        val context = LocalContext.current
 
         InfoSection(
             name,
@@ -70,20 +81,47 @@ fun CreateContact(contactViewModel: ContactViewModel, backToContacts: () -> Unit
         CloseSection(
             backToContacts,
             {
-                contactViewModel.add(
-                    Contact(
-                        0,
-                        name,
-                        name,
-                        phoneNumber,
-                        email,
-                        address,
-                        age,
-                        favorite,
-                        0
+                var canAdd = false
+                if (name.isEmpty()) {
+                    showToast(context, "Il faut un nom de contact")
+                } else if (phoneNumber.isEmpty()) {
+                    showToast(context, "Il faut un numéro de téléphone")
+                } else {
+                    canAdd = true
+                }
+
+
+                if (isContactNew && canAdd) {
+                    contactViewModel.add(
+                        Contact(
+                            0,
+                            name,
+                            phoneNumber,
+                            email,
+                            address,
+                            age,
+                            favorite,
+                            0
+                        )
                     )
-                )
-                backToContacts()
+                    showToast(context, "Ajouté $name aux contacts")
+                    backToContacts()
+                } else if (canAdd) {
+                    contactViewModel.update(
+                        Contact(
+                            currentContact.uid,
+                            name,
+                            phoneNumber,
+                            email,
+                            address,
+                            age,
+                            favorite,
+                            0
+                        )
+                    )
+                    showToast(context, "$name sauvegardé")
+                    backToContacts()
+                }
             }
         )
     }
@@ -129,7 +167,7 @@ fun InfoSection(
         )
         OutlinedTextField(
             value = age.toString(),
-            onValueChange = { changeAge(it.toInt()) },
+            onValueChange = { changeAge(if (it.isNotEmpty()) it.toInt() else 0) },
             label = { Text(text = "Age") },
             modifier = Modifier.fillMaxWidth()
         )

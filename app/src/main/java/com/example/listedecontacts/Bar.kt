@@ -1,5 +1,7 @@
 package com.example.listedecontacts
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -15,9 +17,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import com.example.listedecontacts.data.ContactViewModel
 import com.example.listedecontacts.ui.theme.DarkColorScheme
 import com.example.listedecontacts.ui.theme.LightColorScheme
+
+fun showToast(context: Context, msg: String) {
+    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +56,13 @@ fun AddContact(addContact: () -> Unit) {
 
 @Composable
 fun RemoveContact(removeContact: () -> Unit) {
-    IconButton(onClick = { removeContact() }) {
+    val context = LocalContext.current
+    IconButton(onClick = {
+        if (!isContactNew) {
+            showToast(context, "${currentContact.name} supprimé")
+        }
+        removeContact()
+    }) {
         Icon(
             imageVector = Icons.Default.Delete,
             contentDescription = "",

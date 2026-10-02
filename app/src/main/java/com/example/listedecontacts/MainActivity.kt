@@ -46,7 +46,6 @@ public var currentContact: Contact =
     Contact(
         0,
         "first",
-        "last",
         "1234",
         "@email.com",
         "address",
@@ -79,6 +78,7 @@ fun MainUI(contactViewModel: ContactViewModel) {
                 isEditing,
                 {
                     screen = Screens.CreateContact
+                    isContactNew = true
                     isEditing = true
                 },
                 {
@@ -86,7 +86,7 @@ fun MainUI(contactViewModel: ContactViewModel) {
                         screen = Screens.Contacts
                         isEditing = false
                     } else {
-//                        contactViewModel.delete(currentContact)
+                        contactViewModel.delete(currentContact)
                         screen = Screens.Contacts
                         isEditing = false
                     }
@@ -101,7 +101,11 @@ fun MainUI(contactViewModel: ContactViewModel) {
                 .fillMaxSize()
         ) {
             if (screen == Screens.Contacts)
-                ContactList(contacts)
+                ContactList(contacts, {
+                    currentContact = it
+                    isContactNew = false
+                    screen = Screens.CreateContact
+                })
             else
                 CreateContact(
                     contactViewModel,
