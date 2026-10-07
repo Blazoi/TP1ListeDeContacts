@@ -1,6 +1,5 @@
 package com.example.listedecontacts.contacts
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,12 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,9 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,6 +30,8 @@ import androidx.core.R
 import com.example.listedecontacts.currentContact
 import com.example.listedecontacts.data.Contact
 import com.example.listedecontacts.isContactNew
+import androidx.core.net.toUri
+import coil3.compose.AsyncImage
 
 @Composable
 fun ContactList(contacts: List<Contact>, editContact: (Contact) -> Unit) {
@@ -40,6 +40,9 @@ fun ContactList(contacts: List<Contact>, editContact: (Contact) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         items(contacts) { contact ->
+
+            val pfpURI = contact.photo.toUri()
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -58,11 +61,17 @@ fun ContactList(contacts: List<Contact>, editContact: (Contact) -> Unit) {
                         .background(MaterialTheme.colorScheme.primary),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (contact.photo > 0) {
-                        Image(
-                            painter = painterResource(contact.photo),
-                            contentDescription = "Photo",
-                        )
+                    if (contact.photo.isNotEmpty()) {
+                        pfpURI?.let { uri ->
+                            AsyncImage(
+                                model = uri,
+                                contentDescription = "Profile picture",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxSize(.925f)
+                                    .clip(CircleShape)
+                            )
+                        }
                     } else {
                         Text(
                             text = contact.name[0].toString().capitalize(),

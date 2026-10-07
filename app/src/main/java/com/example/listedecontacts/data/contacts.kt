@@ -15,5 +15,5 @@ data class Contact(
     val address: String,
     val age: Int,
     val favorite: Boolean,
-    val photo: Int
+    val photo: String
 )

@@ -27,6 +27,8 @@ import com.example.listedecontacts.data.ContactDao
 import com.example.listedecontacts.data.ContactViewModel
 import kotlinx.coroutines.flow.StateFlow
 
+public val TAG = "DEBUGGING"
+
 class MainActivity : ComponentActivity() {
 
     private val contactViewModel: ContactViewModel by viewModels()
@@ -45,13 +47,13 @@ class MainActivity : ComponentActivity() {
 public var currentContact: Contact =
     Contact(
         0,
-        "first",
-        "1234",
-        "@email.com",
-        "address",
-        19,
+        "",
+        "",
+        "",
+        "",
+        0,
         false,
-        0
+        ""
     )
 
 public var isContactNew = true
